@@ -1,24 +1,39 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import Module from './components/Module';
+import ModuleForm from './components/ModuleForm';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import './App.css';
 
 function App() {
+  const [modules, setModules] = useState([]);
+
+  const addModule = (title) => {
+    setModules([...modules, { id: Date.now(), title, resources: [] }]);
+  };
+
+  const deleteModule = (id) => {
+    setModules(modules.filter(module => module.id !== id));
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <DndProvider backend={HTML5Backend}>
+      <div className="App">
+        <h1>Course Builder</h1>
+        <ModuleForm addModule={addModule} />
+        <div className="modules">
+          {modules.map(module => (
+            <Module 
+              key={module.id} 
+              module={module} 
+              deleteModule={deleteModule} 
+              modules={modules} 
+              setModules={setModules} 
+            />
+          ))}
+        </div>
+      </div>
+    </DndProvider>
   );
 }
 
